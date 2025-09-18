@@ -1,0 +1,33 @@
+controle-ponto-api/
+├── .vscode/
+│   ├── launch.json
+│   └── settings.json
+├── config/
+│   ├── database.js
+│   └── firebase.js
+├── controllers/
+│   ├── auth.controller.js
+│   ├── funcionarios.controller.js
+│   ├── ponto.controller.js
+│   └── relatorios.controller.js
+├── migrations/
+│   ├── 0001-create-tables.js
+│   └── 0002-add-configuracoes.js
+├── middlewares/
+│   └── auth.middleware.js
+├── models/
+│   ├── funcionario.model.js
+│   ├── registro.model.js
+│   └── usuario.model.js
+├── routes/
+│   ├── auth.routes.js
+│   ├── funcionarios.routes.js
+│   ├── index.js
+│   ├── ponto.routes.js
+│   └── relatorios.routes.js
+├── .env
+├── .env.example
+├── .gitignore
+├── app.js
+├── package.json
+└── README.md

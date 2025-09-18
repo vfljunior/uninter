@@ -1,0 +1,186 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+      "title": "API Controle de Ponto",
+      "version": "1.0.0",
+      "description": "Documentação da API para sistema de controle de ponto eletrônico"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000/api",
+        "description": "Servidor local"
+      }
+    ],
+    "paths": {
+      "/auth/login": {
+        "post": {
+          "tags": ["Autenticação"],
+          "summary": "Login de usuário",
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string", "example": "admin@empresa.com" },
+                    "senha": { "type": "string", "example": "senha123" }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Login realizado com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "token": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Credenciais inválidas"
+            }
+          }
+        }
+      },
+      "/funcionarios": {
+        "get": {
+          "tags": ["Funcionários"],
+          "summary": "Listar todos os funcionários ativos",
+          "security": [{ "BearerAuth": [] }],
+          "responses": {
+            "200": {
+              "description": "Lista de funcionários",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Funcionario"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "post": {
+          "tags": ["Funcionários"],
+          "summary": "Criar novo funcionário",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FuncionarioInput"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Funcionário criado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Funcionario"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "/ponto/registrar": {
+        "post": {
+          "tags": ["Ponto"],
+          "summary": "Registrar ponto",
+          "security": [{ "BearerAuth": [] }],
+          "requestBody": {
+            "required": true,
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "tipo": { 
+                      "type": "string",
+                      "enum": ["entrada", "almoco", "retorno", "saida"],
+                      "example": "entrada"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Ponto registrado",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/RegistroPonto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Funcionario": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "nome": { "type": "string" },
+            "email": { "type": "string" },
+            "cargo": { "type": "string" },
+            "departamento": { "type": "string" },
+            "jornada_diaria": { "type": "string" },
+            "ativo": { "type": "boolean" }
+          }
+        },
+        "FuncionarioInput": {
+          "type": "object",
+          "properties": {
+            "nome": { "type": "string", "example": "João Silva" },
+            "email": { "type": "string", "example": "joao@empresa.com" },
+            "cargo": { "type": "string", "example": "Desenvolvedor" },
+            "departamento": { "type": "string", "example": "TI" },
+            "jornada_diaria": { "type": "string", "example": "08:00:00" }
+          }
+        },
+        "RegistroPonto": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "funcionario_id": { "type": "integer" },
+            "data": { "type": "string", "format": "date" },
+            "entrada": { "type": "string", "format": "time" },
+            "almoco": { "type": "string", "format": "time" },
+            "retorno": { "type": "string", "format": "time" },
+            "saida": { "type": "string", "format": "time" },
+            "horas_trabalhadas": { "type": "string" },
+            "horas_extras": { "type": "string" }
+          }
+        }
+      },
+      "securitySchemes": {
+        "BearerAuth": {
+          "type": "http",
+          "scheme": "bearer",
+          "bearerFormat": "JWT"
+        }
+      }
+    }
+  }
